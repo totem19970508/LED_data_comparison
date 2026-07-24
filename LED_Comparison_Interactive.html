@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LED Product Comparison</title>
+  <meta name="description" content="Interactive comparison of eight integrated-driver RGB LED products." />
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #66717d;
+      --line: #c7d4e3;
+      --panel: #f5f7fa;
+      --header: #606a74;
+      --accent: #1473e6;
+      --accent-soft: #e8f1fd;
+      --red: #ef3b2d;
+      --green: #67b83e;
+      --blue: #1596c4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef1f4;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input { font: inherit; }
+    .app { min-height: 100vh; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 20px 28px;
+      color: white;
+      background: #26333f;
+      border-bottom: 1px solid #182129;
+    }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .mark {
+      display: grid;
+      grid-template-columns: repeat(3, 8px);
+      gap: 3px;
+      padding: 8px;
+      border: 1px solid #53616e;
+      border-radius: 8px;
+      background: #1c2731;
+    }
+    .company-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+    }
+    .mark i { width: 8px; height: 8px; border-radius: 50%; }
+    .mark i:nth-child(1) { background: var(--red); }
+    .mark i:nth-child(2) { background: var(--green); }
+    .mark i:nth-child(3) { background: var(--blue); }
+    h1 { margin: 0; font-size: 20px; letter-spacing: -.02em; }
+    .sub { margin-top: 3px; color: #bac5ce; font-size: 12px; }
+    .counter {
+      color: #dce5ec;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 286px minmax(0, 1fr);
+      min-height: calc(100vh - 81px);
+    }
+    aside {
+      padding: 18px;
+      background: white;
+      border-right: 1px solid #d5dde5;
+    }
+    .control-section + .control-section { margin-top: 24px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #4d5964;
+    }
+    .actions { display: flex; gap: 4px; }
+    .text-btn {
+      padding: 3px 6px;
+      border: 0;
+      color: var(--accent);
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .text-btn:hover { text-decoration: underline; }
+    .search {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 9px 10px;
+      border: 1px solid #ccd6df;
+      border-radius: 6px;
+      outline: none;
+      background: #fbfcfd;
+      font-size: 12px;
+    }
+    .search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .check-list {
+      display: grid;
+      gap: 2px;
+      max-height: 300px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .check {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 7px 6px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .check:hover { background: #f1f5f8; }
+    .check input { margin: 1px 0 0; accent-color: var(--accent); }
+    .check small { display: block; color: var(--muted); margin-top: 1px; }
+    main { min-width: 0; padding: 18px; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .toggle-aside {
+      padding: 8px 10px;
+      border: 1px solid #c7d1da;
+      border-radius: 6px;
+      color: #35414c;
+      background: white;
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+    .mode {
+      display: inline-flex;
+      padding: 3px;
+      border: 1px solid #ccd5de;
+      border-radius: 7px;
+      background: white;
+    }
+    .mode button {
+      padding: 7px 11px;
+      border: 0;
+      border-radius: 5px;
+      color: #4e5a66;
+      background: transparent;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .mode button.active { color: white; background: var(--accent); }
+    .export-actions { display: flex; gap: 8px; }
+    .button {
+      padding: 8px 12px;
+      border: 1px solid #c7d1da;
+      border-radius: 6px;
+      color: #35414c;
+      background: white;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .button:hover { border-color: #8fa1b2; background: #f8fafb; }
+    .table-shell {
+      overflow: auto;
+      max-height: calc(100vh - 154px);
+      background: white;
+      border: 1px solid #bdcad8;
+      box-shadow: 0 4px 20px rgba(37, 51, 63, .08);
+    }
+    table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 9px 10px;
+      text-align: center;
+      vertical-align: middle;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      overflow-wrap: anywhere;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      height: 62px;
+      color: white;
+      background: var(--header);
+      font-weight: 700;
+      position: relative;
+    }
+    thead th:first-child {
+      left: 0;
+      z-index: 5;
+      width: 230px;
+    }
+    tbody th {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      width: 230px;
+      background: #fff;
+      font-weight: 700;
+    }
+    tbody tr:hover td, tbody tr:hover th { background-color: #f5f9fd; }
+    .maker { display: block; font-size: 11px; opacity: .82; }
+    .part { display: block; margin-top: 3px; }
+    .normalized { background: #f7f8fa; color: var(--ink); }
+    thead th.normalized { color: var(--ink); }
+    .row-red th { color: var(--red); }
+    /* Resizer handle */
+    .col-resizer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 8px;
+      height: 100%;
+      cursor: col-resize;
+      z-index: 6;
+      background: transparent;
+    }
+    .layout { transition: grid-template-columns 200ms ease; }
+    aside { transition: width 200ms ease, padding 200ms ease, visibility 200ms ease; }
+    .layout.aside-collapsed { grid-template-columns: 0 1fr; }
+    .layout.aside-collapsed aside {
+      width: 0 !important;
+      padding: 0 !important;
+      visibility: hidden !important;
+      overflow: hidden !important;
+      border-right: 0 !important;
+    }
+    .row-green th { color: var(--green); }
+    .row-blue th { color: var(--blue); }
+    /* Full-page mode: hide header and aside, expand table to full viewport */
+    .app.fullpage header.topbar { display: none !important; }
+    .app.fullpage .layout { grid-template-columns: 0 1fr !important; }
+    .app.fullpage aside { width: 0 !important; padding: 0 !important; visibility: hidden !important; border-right: 0 !important; }
+    .app.fullpage main { padding: 12px 6px 18px 12px; }
+    .app.fullpage .table-shell { max-height: calc(100vh - 24px); border-radius: 0; }
+    .empty {
+      padding: 54px 20px;
+      text-align: center;
+      color: var(--muted);
+      background: white;
+      border: 1px solid var(--line);
+    }
+    .assumption {
+      margin: 10px 2px 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid #d5dde5; }
+      .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .control-section + .control-section { margin-top: 0; }
+      .check-list { max-height: 190px; }
+      main { padding: 12px; }
+      .table-shell { max-height: 68vh; }
+    }
+    @media (max-width: 620px) {
+      .topbar { padding: 16px; align-items: flex-start; }
+      .counter { display: none; }
+      .controls-grid { grid-template-columns: 1fr; }
+      .control-section + .control-section { margin-top: 18px; }
+      .toolbar { align-items: stretch; }
+      .export-actions { width: 100%; }
+      .button { flex: 1; }
+    }
+    @media print {
+      .topbar, aside, .toolbar, .assumption { display: none !important; }
+      .layout { display: block; }
+      main { padding: 0; }
+      .table-shell { max-height: none; overflow: visible; border: 0; box-shadow: none; }
+      table { min-width: 0; font-size: 8px; }
+      thead th, tbody th { position: static; }
+      th, td { padding: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <img src="company%20logo.png" alt="Company logo" class="company-logo" />
+        <div>
+          <h1>RGB LED Comparison ver1.0</h1>
+          <div class="sub">Original specifications and normalized optical output at 3.2 mA</div>
+        </div>
+      </div>
+      <div class="counter" id="counter"></div>
+    </header>
+
+    <div class="layout">
+      <aside aria-label="Comparison filters">
+        <div class="controls-grid">
+          <section class="control-section">
+            <div class="section-head">
+              <h2>Products</h2>
+              <div class="actions">
+                <button class="text-btn" data-action="all-products">All</button>
+                <button class="text-btn" data-action="no-products">None</button>
+              </div>
+            </div>
+            <div class="check-list" id="product-list"></div>
+          </section>
+
+          <section class="control-section">
+            <div class="section-head">
+              <h2>Comparison fields</h2>
+              <div class="actions">
+                <button class="text-btn" data-action="all-fields">All</button>
+                <button class="text-btn" data-action="no-fields">None</button>
+              </div>
+            </div>
+            <input class="search" id="field-search" type="search" placeholder="Search fields…" aria-label="Search comparison fields" />
+            <div class="check-list" id="field-list"></div>
+          </section>
+        </div>
+      </aside>
+
+      <main>
+        <div class="toolbar">
+          <div class="mode" role="group" aria-label="Value display mode">
+            <button class="active" data-mode="both">Original + normalized</button>
+            <button data-mode="original">Original only</button>
+            <button data-mode="normalized">Normalized only</button>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px">
+            <button class="toggle-aside" id="toggle-aside">Hide filters</button>
+            <button class="button" id="toggle-full">Full page</button>
+            <div class="export-actions">
+              <button class="button" id="copy-button">Copy visible table</button>
+              <button class="button" onclick="window.print()">Print / PDF</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="table-region"></div>
+        <p class="assumption">Normalized luminous intensity assumes linear performance: original value × (3.2 mA ÷ original optical test current).</p>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: "ns2020j6", maker: "NationStar", part: "TBC-T2020M-J6I16" },
+      { id: "kl2222", maker: "Kinglight", part: "2222-CB-B2-IC3" },
+      { id: "cxxx", maker: "Cxxx", part: "OLY6D-FKC Series" },
+      { id: "ns1010", maker: "NationStar", part: "TBF-C1010M-S4I16" },
+      { id: "ns1515mb", maker: "NationStar", part: "TBS-T1515MB-S2I16" },
+      { id: "ns1515mz", maker: "NationStar", part: "TBS-T1515MZ-S2I16" },
+      { id: "ns2020mz", maker: "NationStar", part: "TBS-T2020MZ-S2I16" },
+      { id: "ns2020mzp", maker: "NationStar", part: "TBS-T2020MZ-S2I16-P" }
+    ];
+
+    const rows = [
+      ["Package Size (mm)", ["2.2 × 2.2 × 1.02","2.2 × 2.2 × 1.05","2.8 × 2.8 × 2.5","0.98 × 0.98 × N/S","1.6 × 1.5 × N/S","1.6 × 1.5 × N/S","2.2 × 2.2 × N/S","2.2 × 2.2 × N/S"], [], "Cxxx bigger package"],
+      ["Typical Pitch Range", ["—","—","6 – 12 mm","—","—","—","—","—"], [], "—"],
+      ["Viewing Angle", ["110°","120°","—","110°","110°","110°","110°","110°"], [], "—"],
+      ["Operating Temperature", ["−40 ~ +85 °C","−30 ~ +85 °C","−40 ~ +125 °C","−40 ~ +85 °C","−40 ~ +85 °C","−40 ~ +85 °C","−40 ~ +85 °C","−40 ~ +85 °C"], [], "—"],
+      ["Storage Temperature", ["−40 ~ +85 °C","−40 ~ +85 °C","−65 ~ +150 °C","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Moisture Sensitivity Level", ["—","MSL3","MSL5a","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Water Resistance", ["—","—","IPX6 / IPX8","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Operating Voltage", ["3.3 – 12 V","3.0 – 5.5 V","2.5 – 3.6 V","3.0 – 5.5 V","3.0 – 5.5 V","3.0 – 5.5 V","3.0 – 5.5 V","3.0 – 5.5 V"], [], "Supply Voltage"],
+      ["Data Rate (Max.)", ["800 Kbps (up to 1.2 Mbps)","800 Kbps (up to 1.0 Mbps)","3 Mbps","800 Kbps","800 Kbps","800 Kbps","800 Kbps","800 Kbps"], [], "Bit Rate"],
+      ["PWM / Color Depth", ["16-bit PWM per channel","Not specified","24-bit per channel (72-bit total)","16-bit PWM","16-bit PWM","16-bit PWM","16-bit PWM","16-bit PWM"], [], "Higher = smoother"],
+      ["Maximum Refresh Rate", ["—","—","11,800 Hz","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Gray Scale", ["16-bit (65,536 levels)","Not specified","24-bit (16.7M levels)","16-bit","16-bit","16-bit","16-bit","16-bit"], [], "Per channel"],
+      ["Maximum String Length", ["500 pcs @800Kbps (30Hz)",">4000 pixel",">4000 pixel","Not specified","1024 pixels","1024 pixels","1024 pixels","1024 pixels"], [], "—"],
+      ["Bidirectional Communication", ["Yes (DI0 / DI1)","Yes (DI / BI backup)","Yes","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Output Current Range", ["0.2 – 3.2 mA (16 levels)","Not specified","Selectable currents","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Maximum Output Current (per channel)", ["3.2 mA","Not specified","Not specified","11.6 mA","11.6 mA","11.6 mA","11.6 mA","11.6 mA"], [], "—"],
+      ["Optical Test Current", ["3.2 mA","3.53 mA","8 mA","3.2 mA","3.2 mA","3.2 mA","3.2 mA","3.2 mA"], ["3.2 mA","3.2 mA","3.2 mA","3.2 mA","3.2 mA","3.2 mA","3.2 mA","3.2 mA"], "Condition for optical data"],
+      ["Luminous Intensity — Red", ["86 – 130 mcd @ 3.2 mA","90 – 180 mcd @ 3.53 mA","403 – 635 mcd @ 8 mA","N/S – 30 mcd @ 3.2 mA","N/S – 54 mcd @ 3.2 mA","N/S – 83 mcd @ 3.2 mA","N/S – 79.4 mcd @ 3.2 mA","N/S – 118.2 mcd @ 3.2 mA"], ["86.0 – 130.0 mcd","81.6 – 163.2 mcd","161.2 – 254.0 mcd","N/S – 30.0 mcd","N/S – 54.0 mcd","N/S – 83.0 mcd","N/S – 79.4 mcd","N/S – 118.2 mcd"], "Typical Min ~ Max"],
+      ["Luminous Intensity — Green", ["325 – 489 mcd @ 3.2 mA","320 – 600 mcd @ 3.53 mA","1010 – 1600 mcd @ 8 mA","N/S – 70 mcd @ 3.2 mA","N/S – 195 mcd @ 3.2 mA","N/S – 375 mcd @ 3.2 mA","N/S – 356.1 mcd @ 3.2 mA","N/S – 433 mcd @ 3.2 mA"], ["325.0 – 489.0 mcd","290.1 – 543.9 mcd","404.0 – 640.0 mcd","N/S – 70.0 mcd","N/S – 195.0 mcd","N/S – 375.0 mcd","N/S – 356.1 mcd","N/S – 433.0 mcd"], "Typical Min ~ Max"],
+      ["Luminous Intensity — Blue", ["66 – 100 mcd @ 3.2 mA","70 – 125 mcd @ 3.53 mA","224 – 355 mcd @ 8 mA","N/S – 18 mcd @ 3.2 mA","N/S – 34 mcd @ 3.2 mA","N/S – 72 mcd @ 3.2 mA","N/S – 70.8 mcd @ 3.2 mA","N/S – 78.7 mcd @ 3.2 mA"], ["66.0 – 100.0 mcd","63.5 – 113.3 mcd","89.6 – 142.0 mcd","N/S – 18.0 mcd","N/S – 34.0 mcd","N/S – 72.0 mcd","N/S – 70.8 mcd","N/S – 78.7 mcd"], "Typical Min ~ Max"],
+      ["Dominant Wavelength — Red", ["618 – 623 nm @ 3.2 mA","610 – 630 nm @ 3.53 mA","619 – 624 nm @ 8 mA","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "Color bin ranges"],
+      ["Dominant Wavelength — Green", ["524 – 528 nm @ 3.2 mA","525 – 545 nm @ 3.53 mA","522.5 – 540 nm @ 8 mA","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "Color bin ranges"],
+      ["Dominant Wavelength — Blue", ["469 – 474 nm @ 3.2 mA","460 – 480 nm @ 3.53 mA","465 – 480 nm @ 8 mA","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "Color bin ranges"],
+      ["Junction Temperature (Tj)", ["Not specified","Not specified","−40 ~ +125 °C","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Absolute Max. Supply Voltage", ["12 V","6 V","3.6 V","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["ESD Protection (HBM)", ["4 kV","2 kV","2 kV","Not specified","Not specified","Not specified","Not specified","Not specified"], [], "—"],
+      ["Key Features (Highlights)", ["16-bit PWM, 16-level current, OVP, EMS error monitoring, wide voltage (3.3–12 V)","Dual data backup, long string support, low static current","24-bit color, very high refresh rate, health monitor, CRC and gamma","Ultra-small 1010 package","1515 package, 16-bit PWM","Higher-output 1515 option, 16-bit PWM","2020 package, backup data path","Highest preserved RGB output among later NationStar devices"], [], "Summary"]
+    ].map((r, index) => {
+      const original = r[1];
+      const normalized = Array.isArray(r[2]) ? r[2] : [];
+      const filledNormalized = original.map((value, idx) => {
+        const normalizedValue = normalized[idx];
+        return normalizedValue != null && normalizedValue !== "" ? normalizedValue : value;
+      });
+      return { id: "field-" + index, label: r[0], original, normalized: filledNormalized, notes: r[3] };
+    });
+
+    const state = {
+      selectedProducts: new Set(products.map(p => p.id)),
+      selectedFields: new Set(rows.map(r => r.id)),
+      mode: "both",
+      query: ""
+    };
+
+    const productList = document.getElementById("product-list");
+    const fieldList = document.getElementById("field-list");
+    const tableRegion = document.getElementById("table-region");
+    const counter = document.getElementById("counter");
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" })[c]);
+    }
+
+    function renderProductList() {
+      productList.innerHTML = products.map(p => `
+        <label class="check">
+          <input type="checkbox" data-product="${p.id}" ${state.selectedProducts.has(p.id) ? "checked" : ""}>
+          <span>${escapeHtml(p.part)}<small>${escapeHtml(p.maker)}</small></span>
+        </label>`).join("");
+    }
+
+    function renderFieldList() {
+      const query = state.query.toLowerCase();
+      fieldList.innerHTML = rows
+        .filter(r => r.label.toLowerCase().includes(query))
+        .map(r => `
+          <label class="check">
+            <input type="checkbox" data-field="${r.id}" ${state.selectedFields.has(r.id) ? "checked" : ""}>
+            <span>${escapeHtml(r.label)}</span>
+          </label>`).join("");
+    }
+
+    function rowClass(label) {
+      if (label.endsWith("— Red")) return "row-red";
+      if (label.endsWith("— Green")) return "row-green";
+      if (label.endsWith("— Blue")) return "row-blue";
+      return "";
+    }
+
+    function renderTable() {
+      const visibleProducts = products.filter(p => state.selectedProducts.has(p.id));
+      const visibleRows = rows.filter(r => state.selectedFields.has(r.id) && r.label.toLowerCase().includes(state.query.toLowerCase()));
+      counter.textContent = `${visibleProducts.length} products · ${visibleRows.length} fields`;
+
+      // (aside collapse controlled only by the toggle button)
+
+      if (!visibleProducts.length || !visibleRows.length) {
+        tableRegion.innerHTML = `<div class="empty">Select at least one product and one comparison field.</div>`;
+        return;
+      }
+
+      const colCount = visibleProducts.length * (state.mode === "both" ? 2 : 1) + 2;
+      let html = `<div class="table-shell"><table style="min-width:${Math.max(900, colCount * 155)}px"><thead><tr><th>Parameter</th>`;
+      visibleProducts.forEach(p => {
+        if (state.mode !== "normalized") {
+          html += `<th><span class="maker">${escapeHtml(p.maker)}</span><span class="part">${escapeHtml(p.part)}</span></th>`;
+        }
+        if (state.mode !== "original") {
+          const normalizedHeader = `${p.part} 32mA`;
+          html += `<th class="normalized"><span class="maker">${escapeHtml(p.maker)}</span><span class="part">${escapeHtml(normalizedHeader)}</span></th>`;
+        }
+      });
+      html += `<th>Notes</th></tr></thead><tbody>`;
+
+      visibleRows.forEach(row => {
+        html += `<tr class="${rowClass(row.label)}"><th scope="row">${escapeHtml(row.label)}</th>`;
+        visibleProducts.forEach(p => {
+          const index = products.findIndex(item => item.id === p.id);
+          if (state.mode !== "normalized") html += `<td>${escapeHtml(row.original[index] ?? "")}</td>`;
+          if (state.mode !== "original") {
+            const normalizedValue = row.normalized[index] !== undefined && row.normalized[index] !== null
+              ? row.normalized[index]
+              : row.original[index];
+            html += `<td class="normalized">${escapeHtml(normalizedValue ?? "")}</td>`;
+          }
+        });
+        html += `<td>${escapeHtml(row.notes)}</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+      tableRegion.innerHTML = html;
+      // After inserting the table HTML, attach resizers for columns
+      addResizers();
+    }
+
+    function render() {
+      renderProductList();
+      renderFieldList();
+      renderTable();
+    }
+
+    // Toggle the left filters aside and persist state
+    const toggleAsideBtn = document.getElementById("toggle-aside");
+    const layoutEl = document.querySelector(".layout");
+    const ASIDE_KEY = 'ledcmp_aside_collapsed';
+    const COLWIDTH_KEY = 'ledcmp_col_widths';
+
+    function setAsideCollapsed(collapsed, save = true) {
+      layoutEl.classList.toggle('aside-collapsed', !!collapsed);
+      toggleAsideBtn.textContent = collapsed ? 'Show filters' : 'Hide filters';
+      if (save) localStorage.setItem(ASIDE_KEY, JSON.stringify(!!collapsed));
+    }
+
+    // Initialize aside state from localStorage
+    try {
+      const savedAside = JSON.parse(localStorage.getItem(ASIDE_KEY));
+      setAsideCollapsed(!!savedAside, false);
+    } catch (e) {
+      setAsideCollapsed(false, false);
+    }
+
+    toggleAsideBtn.addEventListener('click', () => {
+      const collapsed = !layoutEl.classList.contains('aside-collapsed');
+      setAsideCollapsed(collapsed, true);
+    });
+
+    // Full-page toggle: hide header and aside and expand table to fill viewport
+    const toggleFullBtn = document.getElementById('toggle-full');
+    const appEl = document.querySelector('.app');
+    const FULLPAGE_KEY = 'ledcmp_fullpage';
+
+    function setFullPage(enabled, save = true) {
+      appEl.classList.toggle('fullpage', !!enabled);
+      toggleFullBtn.textContent = enabled ? 'Restore' : 'Full page';
+      if (save) localStorage.setItem(FULLPAGE_KEY, JSON.stringify(!!enabled));
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(FULLPAGE_KEY));
+      setFullPage(!!saved, false);
+    } catch (e) {
+      setFullPage(false, false);
+    }
+
+    toggleFullBtn.addEventListener('click', () => {
+      const isFull = appEl.classList.contains('fullpage');
+      setFullPage(!isFull, true);
+    });
+
+    // Add column resizers to the table header, persist widths
+    function addResizers() {
+      const table = tableRegion.querySelector("table");
+      if (!table) return;
+      // Remove existing resizers
+      table.querySelectorAll('.col-resizer').forEach(n => n.remove());
+      const headers = table.querySelectorAll('thead th');
+
+      headers.forEach((th, index) => {
+        // don't add resizer to last header
+        if (index === headers.length - 1) return;
+        const resizer = document.createElement('div');
+        resizer.className = 'col-resizer';
+        th.appendChild(resizer);
+
+        let startX, startWidth;
+        const onMouseMove = (e) => {
+          const dx = e.clientX - startX;
+          const newWidth = Math.max(40, startWidth + dx);
+          th.style.width = newWidth + 'px';
+        };
+        const onMouseUp = () => {
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+          saveWidths();
+        };
+
+        resizer.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          startX = e.clientX;
+          startWidth = th.offsetWidth;
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+      });
+
+      // Restore previously saved widths (if any)
+      restoreWidths();
+    }
+
+    function saveWidths() {
+      const table = tableRegion.querySelector('table');
+      if (!table) return;
+      const headers = table.querySelectorAll('thead th');
+      const widths = Array.from(headers).map(h => h.offsetWidth);
+      try { localStorage.setItem(COLWIDTH_KEY, JSON.stringify(widths)); } catch (e) {}
+    }
+
+    function restoreWidths() {
+      const table = tableRegion.querySelector('table');
+      if (!table) return;
+      let widths = null;
+      try { widths = JSON.parse(localStorage.getItem(COLWIDTH_KEY)); } catch (e) {}
+      if (!Array.isArray(widths)) return;
+      const headers = table.querySelectorAll('thead th');
+      headers.forEach((h, i) => {
+        if (widths[i]) h.style.width = widths[i] + 'px';
+      });
+    }
+
+    document.addEventListener("change", event => {
+      const productId = event.target.dataset.product;
+      const fieldId = event.target.dataset.field;
+      if (productId) event.target.checked ? state.selectedProducts.add(productId) : state.selectedProducts.delete(productId);
+      if (fieldId) event.target.checked ? state.selectedFields.add(fieldId) : state.selectedFields.delete(fieldId);
+      renderTable();
+    });
+
+    document.addEventListener("click", event => {
+      const action = event.target.dataset.action;
+      if (action === "all-products") state.selectedProducts = new Set(products.map(p => p.id));
+      if (action === "no-products") state.selectedProducts.clear();
+      if (action === "all-fields") state.selectedFields = new Set(rows.map(r => r.id));
+      if (action === "no-fields") state.selectedFields.clear();
+      if (action) render();
+
+      const mode = event.target.dataset.mode;
+      if (mode) {
+        state.mode = mode;
+        document.querySelectorAll("[data-mode]").forEach(btn => btn.classList.toggle("active", btn.dataset.mode === mode));
+        renderTable();
+      }
+    });
+
+    document.getElementById("field-search").addEventListener("input", event => {
+      state.query = event.target.value;
+      renderFieldList();
+      renderTable();
+    });
+
+    document.getElementById("copy-button").addEventListener("click", async event => {
+      const table = tableRegion.querySelector("table");
+      if (!table) return;
+      const text = [...table.rows].map(row => [...row.cells].map(cell => cell.innerText.replace(/\n/g, " ")).join("\t")).join("\n");
+      await navigator.clipboard.writeText(text);
+      const old = event.target.textContent;
+      event.target.textContent = "Copied";
+      setTimeout(() => event.target.textContent = old, 1200);
+    });
+
+    render();
+  </script>
+</body>
+</html>
