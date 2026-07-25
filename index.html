@@ -506,7 +506,7 @@
   <section class="auth-page" id="auth-page" aria-labelledby="auth-title">
     <div class="auth-story">
       <div class="auth-brand">
-        <img src="company logo.png" alt="ClearLED" class="auth-logo" />
+        <img alt="ClearLED" class="auth-logo" id="auth-logo" />
         <span class="auth-brand-name">Product Intelligence</span>
       </div>
       <div class="auth-copy">
@@ -620,6 +620,7 @@
     const AUTH_KEY = "clearled_authenticated";
     const authPage = document.getElementById("auth-page");
     const appPage = document.getElementById("app");
+    document.getElementById("auth-logo").src = document.querySelector(".company-logo").src;
     const authForm = document.getElementById("auth-form");
     const authEmail = document.getElementById("auth-email");
     const authPassword = document.getElementById("auth-password");
