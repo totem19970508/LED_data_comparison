@@ -7,25 +7,143 @@
   <meta name="description" content="Interactive comparison of eight integrated-driver RGB LED products." />
   <style>
     :root {
-      --ink: #17212b;
-      --muted: #66717d;
-      --line: #c7d4e3;
-      --panel: #f5f7fa;
-      --header: #606a74;
-      --accent: #1473e6;
-      --accent-soft: #e8f1fd;
-      --red: #ef3b2d;
-      --green: #67b83e;
-      --blue: #1596c4;
+      --ink: #eef7ff;
+      --muted: #8faecf;
+      --line: #284a6d;
+      --panel: #10263d;
+      --surface: #091726;
+      --surface-2: #12304f;
+      --header: #0a1830;
+      --accent: #4ec5ff;
+      --accent-soft: rgba(78, 197, 255, 0.16);
+      --red: #ff6b6b;
+      --green: #63e6be;
+      --blue: #5ecbff;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       color: var(--ink);
-      background: #eef1f4;
+      background: linear-gradient(180deg, #071321 0%, #0b1830 100%);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     button, input { font: inherit; }
+    [hidden] { display: none !important; }
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(320px, 1.05fr) minmax(380px, .95fr);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(78, 197, 255, .15), transparent 32%),
+        linear-gradient(145deg, #06111e 0%, #0a1d32 58%, #0b2742 100%);
+    }
+    .auth-story {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+      padding: 42px clamp(34px, 6vw, 92px);
+      overflow: hidden;
+      border-right: 1px solid rgba(143, 174, 207, .18);
+    }
+    .auth-story::after {
+      content: "";
+      position: absolute;
+      right: -130px;
+      bottom: -130px;
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(78, 197, 255, .16);
+      border-radius: 50%;
+      box-shadow: 0 0 0 72px rgba(78, 197, 255, .035), 0 0 0 144px rgba(78, 197, 255, .025);
+      pointer-events: none;
+    }
+    .auth-brand { display: flex; align-items: center; gap: 13px; position: relative; z-index: 1; }
+    .auth-logo {
+      width: auto;
+      height: 42px;
+      max-width: 130px;
+      object-fit: contain;
+      padding: 6px 9px;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .auth-brand-name { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .auth-copy { position: relative; z-index: 1; max-width: 630px; margin: auto 0; padding: 72px 0; }
+    .auth-eyebrow { margin: 0 0 18px; color: var(--accent); font-size: 12px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .auth-copy h1 { max-width: 600px; font-size: clamp(40px, 5vw, 72px); line-height: .98; letter-spacing: -.055em; }
+    .auth-copy p { max-width: 520px; margin: 24px 0 0; color: #a9bfd7; font-size: 17px; line-height: 1.65; }
+    .auth-meta { position: relative; z-index: 1; color: #7894b0; font-size: 12px; }
+    .auth-panel {
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 32px;
+      background: rgba(4, 13, 23, .28);
+    }
+    .auth-card { width: min(100%, 430px); }
+    .auth-card h2 { margin: 0; font-size: 30px; letter-spacing: -.035em; }
+    .auth-intro { margin: 10px 0 30px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .auth-form { display: grid; gap: 18px; }
+    .auth-field { display: grid; gap: 8px; }
+    .auth-label { color: #c9d9e9; font-size: 12px; font-weight: 650; }
+    .auth-input-wrap { position: relative; }
+    .auth-input {
+      width: 100%;
+      height: 50px;
+      padding: 0 14px;
+      border: 1px solid #294967;
+      border-radius: 9px;
+      outline: none;
+      color: var(--ink);
+      background: rgba(15, 39, 62, .8);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .auth-input::placeholder { color: #66819d; }
+    .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    .auth-input.password { padding-right: 72px; }
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      transform: translateY(-50%);
+      padding: 8px;
+      border: 0;
+      color: #9eb5cc;
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .auth-options { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .remember { display: flex; align-items: center; gap: 8px; color: #a9bfd7; font-size: 12px; cursor: pointer; }
+    .remember input { accent-color: var(--accent); }
+    .auth-link { color: var(--accent); font-size: 12px; text-decoration: none; }
+    .auth-submit {
+      height: 50px;
+      border: 0;
+      border-radius: 9px;
+      color: #06111e;
+      background: linear-gradient(135deg, #8ee7ff 0%, #4ec5ff 100%);
+      box-shadow: 0 10px 24px rgba(78, 197, 255, .2);
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .auth-submit:hover { filter: brightness(1.06); }
+    .auth-submit:focus-visible { outline: 3px solid rgba(142, 231, 255, .35); outline-offset: 3px; }
+    .auth-error { min-height: 18px; margin: -5px 0 0; color: #ff9191; font-size: 12px; }
+    .auth-note {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(143, 174, 207, .16);
+      color: #7894b0;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .lock-dot { flex: 0 0 auto; width: 7px; height: 7px; margin-top: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(99,230,190,.1); }
     .app { min-height: 100vh; }
     .topbar {
       display: flex;
@@ -34,8 +152,8 @@
       gap: 24px;
       padding: 20px 28px;
       color: white;
-      background: #26333f;
-      border-bottom: 1px solid #182129;
+      background: linear-gradient(135deg, #0a1830 0%, #12304f 100%);
+      border-bottom: 1px solid #213a55;
     }
     .brand { display: flex; align-items: center; gap: 13px; }
     .mark {
@@ -70,6 +188,17 @@
       font-size: 13px;
       white-space: nowrap;
     }
+    .topbar-actions { display: flex; align-items: center; gap: 14px; }
+    .signout-button {
+      padding: 7px 10px;
+      border: 1px solid rgba(143, 174, 207, .34);
+      border-radius: 6px;
+      color: #cfe0ef;
+      background: rgba(9, 23, 38, .5);
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .signout-button:hover { border-color: var(--accent); }
     .layout {
       display: grid;
       grid-template-columns: 286px minmax(0, 1fr);
@@ -77,8 +206,8 @@
     }
     aside {
       padding: 18px;
-      background: white;
-      border-right: 1px solid #d5dde5;
+      background: var(--panel);
+      border-right: 1px solid var(--line);
     }
     .control-section + .control-section { margin-top: 24px; }
     .section-head {
@@ -93,7 +222,7 @@
       font-size: 12px;
       letter-spacing: .08em;
       text-transform: uppercase;
-      color: #4d5964;
+      color: #9dc4ee;
     }
     .actions { display: flex; gap: 4px; }
     .text-btn {
@@ -109,10 +238,11 @@
       width: 100%;
       margin-bottom: 10px;
       padding: 9px 10px;
-      border: 1px solid #ccd6df;
+      border: 1px solid var(--line);
       border-radius: 6px;
       outline: none;
-      background: #fbfcfd;
+      background: var(--surface-2);
+      color: var(--ink);
       font-size: 12px;
     }
     .search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
@@ -134,7 +264,7 @@
       font-size: 12px;
       line-height: 1.3;
     }
-    .check:hover { background: #f1f5f8; }
+    .check:hover { background: rgba(78, 197, 255, 0.12); }
     .check input { margin: 1px 0 0; accent-color: var(--accent); }
     .check small { display: block; color: var(--muted); margin-top: 1px; }
     main { min-width: 0; padding: 18px; }
@@ -146,50 +276,57 @@
       gap: 12px;
       margin-bottom: 12px;
     }
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .toggle-aside {
-      padding: 8px 10px;
-      border: 1px solid #c7d1da;
-      border-radius: 6px;
-      color: #35414c;
-      background: white;
+      padding: 8px 12px;
+      border: 1px solid #4eb7f0;
+      border-radius: 999px;
+      color: #071321;
+      background: linear-gradient(135deg, #8ee7ff 0%, #4ec5ff 100%);
       cursor: pointer;
       font-size: 12px;
-      margin-right: 8px;
+      font-weight: 700;
+      box-shadow: 0 6px 16px rgba(78, 197, 255, 0.22);
     }
     .mode {
       display: inline-flex;
       padding: 3px;
-      border: 1px solid #ccd5de;
-      border-radius: 7px;
-      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-2);
     }
     .mode button {
       padding: 7px 11px;
       border: 0;
-      border-radius: 5px;
-      color: #4e5a66;
+      border-radius: 999px;
+      color: #a5c0de;
       background: transparent;
       cursor: pointer;
       font-size: 12px;
     }
-    .mode button.active { color: white; background: var(--accent); }
+    .mode button.active { color: #071321; background: linear-gradient(135deg, #8ee7ff 0%, #4ec5ff 100%); }
     .export-actions { display: flex; gap: 8px; }
     .button {
       padding: 8px 12px;
-      border: 1px solid #c7d1da;
+      border: 1px solid var(--line);
       border-radius: 6px;
-      color: #35414c;
-      background: white;
+      color: var(--ink);
+      background: var(--surface-2);
       cursor: pointer;
       font-size: 12px;
     }
-    .button:hover { border-color: #8fa1b2; background: #f8fafb; }
+    .button:hover { border-color: var(--accent); background: #17456d; }
     .table-shell {
       overflow: auto;
       max-height: calc(100vh - 154px);
-      background: white;
-      border: 1px solid #bdcad8;
-      box-shadow: 0 4px 20px rgba(37, 51, 63, .08);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(2, 10, 20, 0.28);
     }
     table {
       width: 100%;
@@ -227,13 +364,14 @@
       left: 0;
       z-index: 2;
       width: 230px;
-      background: #fff;
+      background: var(--surface);
       font-weight: 700;
     }
-    tbody tr:hover td, tbody tr:hover th { background-color: #f5f9fd; }
+    tbody tr:hover td, tbody tr:hover th { background-color: #12304f; }
+    tbody tr:hover td.normalized { background-color: #183b5d; }
     .maker { display: block; font-size: 11px; opacity: .82; }
     .part { display: block; margin-top: 3px; }
-    .normalized { background: #f7f8fa; color: var(--ink); }
+    .normalized { background: #102942; color: var(--ink); }
     thead th.normalized { color: var(--ink); }
     .row-red th { color: var(--red); }
     /* Resizer handle */
@@ -269,15 +407,22 @@
       padding: 54px 20px;
       text-align: center;
       color: var(--muted);
-      background: white;
+      background: var(--surface);
       border: 1px solid var(--line);
     }
     .assumption {
       margin: 10px 2px 0;
-      color: var(--muted);
+      color: #b4cae3;
       font-size: 11px;
     }
     @media (max-width: 900px) {
+      .auth-page { grid-template-columns: 1fr; }
+      .auth-story { min-height: auto; padding: 28px 28px 36px; border-right: 0; border-bottom: 1px solid rgba(143, 174, 207, .18); }
+      .auth-copy { margin: 48px 0 0; padding: 0; }
+      .auth-copy h1 { font-size: clamp(36px, 9vw, 58px); }
+      .auth-copy p { font-size: 15px; }
+      .auth-meta { display: none; }
+      .auth-panel { min-height: auto; padding: 52px 28px 72px; }
       .layout { grid-template-columns: 1fr; }
       aside { border-right: 0; border-bottom: 1px solid #d5dde5; }
       .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -287,6 +432,10 @@
       .table-shell { max-height: 68vh; }
     }
     @media (max-width: 620px) {
+      .auth-story { padding: 22px 20px 30px; }
+      .auth-copy { margin-top: 38px; }
+      .auth-panel { padding: 42px 20px 64px; }
+      .auth-options { align-items: flex-start; flex-direction: column; gap: 10px; }
       .topbar { padding: 16px; align-items: flex-start; }
       .counter { display: none; }
       .controls-grid { grid-template-columns: 1fr; }
@@ -307,7 +456,48 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <section class="auth-page" id="auth-page" aria-labelledby="auth-title">
+    <div class="auth-story">
+      <div class="auth-brand">
+        <img src="company logo.png" alt="ClearLED" class="auth-logo" />
+        <span class="auth-brand-name">Product Intelligence</span>
+      </div>
+      <div class="auth-copy">
+        <p class="auth-eyebrow">ClearLED workspace</p>
+        <h1 id="auth-title">Make brighter product decisions.</h1>
+        <p>Sign in to access normalized optical data, product specifications, and side-by-side LED comparisons.</p>
+      </div>
+      <div class="auth-meta">Confidential product data · Authorized access only</div>
+    </div>
+    <div class="auth-panel">
+      <div class="auth-card">
+        <h2>Welcome back</h2>
+        <p class="auth-intro">Enter your work credentials to continue to the comparison workspace.</p>
+        <form class="auth-form" id="auth-form" novalidate>
+          <label class="auth-field">
+            <span class="auth-label">Work email</span>
+            <input class="auth-input" id="auth-email" type="email" autocomplete="email" placeholder="name@company.com" required />
+          </label>
+          <label class="auth-field">
+            <span class="auth-label">Password</span>
+            <span class="auth-input-wrap">
+              <input class="auth-input password" id="auth-password" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="6" required />
+              <button class="password-toggle" id="password-toggle" type="button" aria-label="Show password">Show</button>
+            </span>
+          </label>
+          <div class="auth-options">
+            <label class="remember"><input id="auth-remember" type="checkbox" /> Keep me signed in</label>
+            <a class="auth-link" href="mailto:admin@clearled.com?subject=ClearLED%20access%20help">Need access help?</a>
+          </div>
+          <p class="auth-error" id="auth-error" role="alert" aria-live="polite"></p>
+          <button class="auth-submit" type="submit">Sign in to workspace</button>
+        </form>
+        <div class="auth-note"><span class="lock-dot" aria-hidden="true"></span><span>This local preview accepts any valid email and a password of at least six characters. Connect an identity provider before production use.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="app" id="app" hidden>
     <header class="topbar">
       <div class="brand">
         <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -317,7 +507,10 @@
           <div class="sub">Original specifications and normalized optical output at 3.2 mA</div>
         </div>
       </div>
-      <div class="counter" id="counter"></div>
+      <div class="topbar-actions">
+        <div class="counter" id="counter"></div>
+        <button class="signout-button" id="signout-button" type="button">Sign out</button>
+      </div>
     </header>
 
     <div class="layout">
@@ -350,13 +543,15 @@
 
       <main>
         <div class="toolbar">
-          <div class="mode" role="group" aria-label="Value display mode">
-            <button class="active" data-mode="both">Original + normalized</button>
-            <button data-mode="original">Original only</button>
-            <button data-mode="normalized">Normalized only</button>
+          <div class="toolbar-left">
+            <button class="toggle-aside" id="toggle-aside"><<<</button>
+            <div class="mode" role="group" aria-label="Value display mode">
+              <button class="active" data-mode="both">Original + normalized</button>
+              <button data-mode="original">Original only</button>
+              <button data-mode="normalized">Normalized only</button>
+            </div>
           </div>
-          <div style="display:flex; align-items:center; gap:8px">
-            <button class="toggle-aside" id="toggle-aside">Hide filters</button>
+          <div class="toolbar-right">
             <button class="button" id="toggle-full">Full page</button>
             <div class="export-actions">
               <button class="button" id="copy-button">Copy visible table</button>
@@ -372,6 +567,70 @@
   </div>
 
   <script>
+    const AUTH_KEY = "clearled_authenticated";
+    const authPage = document.getElementById("auth-page");
+    const appPage = document.getElementById("app");
+    const authForm = document.getElementById("auth-form");
+    const authEmail = document.getElementById("auth-email");
+    const authPassword = document.getElementById("auth-password");
+    const authRemember = document.getElementById("auth-remember");
+    const authError = document.getElementById("auth-error");
+    const passwordToggle = document.getElementById("password-toggle");
+
+    function showWorkspace() {
+      authPage.hidden = true;
+      appPage.hidden = false;
+      document.title = "LED Product Comparison";
+    }
+
+    function showAuthentication() {
+      appPage.hidden = true;
+      authPage.hidden = false;
+      document.title = "Sign in · ClearLED Product Intelligence";
+      window.setTimeout(() => authEmail.focus(), 0);
+    }
+
+    function hasAuthSession() {
+      return sessionStorage.getItem(AUTH_KEY) === "true" || localStorage.getItem(AUTH_KEY) === "true";
+    }
+
+    if (hasAuthSession()) showWorkspace();
+    else showAuthentication();
+
+    passwordToggle.addEventListener("click", () => {
+      const reveal = authPassword.type === "password";
+      authPassword.type = reveal ? "text" : "password";
+      passwordToggle.textContent = reveal ? "Hide" : "Show";
+      passwordToggle.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
+    });
+
+    authForm.addEventListener("submit", event => {
+      event.preventDefault();
+      authError.textContent = "";
+      if (!authEmail.validity.valid) {
+        authError.textContent = "Enter a valid work email address.";
+        authEmail.focus();
+        return;
+      }
+      if (authPassword.value.length < 6) {
+        authError.textContent = "Password must be at least six characters.";
+        authPassword.focus();
+        return;
+      }
+      const storage = authRemember.checked ? localStorage : sessionStorage;
+      storage.setItem(AUTH_KEY, "true");
+      showWorkspace();
+    });
+
+    document.getElementById("signout-button").addEventListener("click", () => {
+      sessionStorage.removeItem(AUTH_KEY);
+      localStorage.removeItem(AUTH_KEY);
+      authForm.reset();
+      authPassword.type = "password";
+      passwordToggle.textContent = "Show";
+      showAuthentication();
+    });
+
     const products = [
       { id: "ns2020j6", maker: "NationStar", part: "TBC-T2020M-J6I16" },
       { id: "kl2222", maker: "Kinglight", part: "2222-CB-B2-IC3" },
@@ -522,7 +781,7 @@
 
     function setAsideCollapsed(collapsed, save = true) {
       layoutEl.classList.toggle('aside-collapsed', !!collapsed);
-      toggleAsideBtn.textContent = collapsed ? 'Show filters' : 'Hide filters';
+      toggleAsideBtn.textContent = collapsed ? '>>>' : '<<<';
       if (save) localStorage.setItem(ASIDE_KEY, JSON.stringify(!!collapsed));
     }
 
