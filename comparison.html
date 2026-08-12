@@ -503,48 +503,7 @@
   </style>
 </head>
 <body>
-  <section class="auth-page" id="auth-page" aria-labelledby="auth-title">
-    <div class="auth-story">
-      <div class="auth-brand">
-        <img alt="ClearLED" class="auth-logo" id="auth-logo" />
-        <span class="auth-brand-name">Product Intelligence</span>
-      </div>
-      <div class="auth-copy">
-        <p class="auth-eyebrow">ClearLED workspace</p>
-        <h1 id="auth-title">Make brighter product decisions.</h1>
-        <p>Sign in to access normalized optical data, product specifications, and side-by-side LED comparisons.</p>
-      </div>
-      <div class="auth-meta">Confidential product data · Authorized access only</div>
-    </div>
-    <div class="auth-panel">
-      <div class="auth-card">
-        <h2>Welcome back</h2>
-        <p class="auth-intro">Enter your work credentials to continue to the comparison workspace.</p>
-        <form class="auth-form" id="auth-form" novalidate>
-          <label class="auth-field">
-            <span class="auth-label">Work email</span>
-            <input class="auth-input" id="auth-email" type="email" autocomplete="email" placeholder="name@company.com" required />
-          </label>
-          <label class="auth-field">
-            <span class="auth-label">Password</span>
-            <span class="auth-input-wrap">
-              <input class="auth-input password" id="auth-password" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="6" required />
-              <button class="password-toggle" id="password-toggle" type="button" aria-label="Show password">Show</button>
-            </span>
-          </label>
-          <div class="auth-options">
-            <label class="remember"><input id="auth-remember" type="checkbox" /> Keep me signed in</label>
-            <a class="auth-link" href="mailto:admin@clearled.com?subject=ClearLED%20access%20help">Need access help?</a>
-          </div>
-          <p class="auth-error" id="auth-error" role="alert" aria-live="polite"></p>
-          <button class="auth-submit" type="submit">Sign in to workspace</button>
-        </form>
-        <div class="auth-note"><span class="lock-dot" aria-hidden="true"></span><span>This local preview accepts any valid email and a password of at least six characters. Connect an identity provider before production use.</span></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="app" id="app" hidden>
+  <div class="app" id="app">
     <header class="topbar">
       <div class="brand">
         <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -558,6 +517,7 @@
       </div>
       <div class="topbar-actions">
         <div class="counter" id="counter"></div>
+        <a class="signout-button" href="../applications.html" style="text-decoration:none">Applications</a>
         <button class="signout-button" id="signout-button" type="button">Sign out</button>
       </div>
     </header>
@@ -618,68 +578,15 @@
 
   <script>
     const AUTH_KEY = "clearled_authenticated";
-    const authPage = document.getElementById("auth-page");
-    const appPage = document.getElementById("app");
-    document.getElementById("auth-logo").src = document.querySelector(".company-logo").src;
-    const authForm = document.getElementById("auth-form");
-    const authEmail = document.getElementById("auth-email");
-    const authPassword = document.getElementById("auth-password");
-    const authRemember = document.getElementById("auth-remember");
-    const authError = document.getElementById("auth-error");
-    const passwordToggle = document.getElementById("password-toggle");
-
-    function showWorkspace() {
-      authPage.hidden = true;
-      appPage.hidden = false;
-      document.title = "LED Product Comparison";
-    }
-
-    function showAuthentication() {
-      appPage.hidden = true;
-      authPage.hidden = false;
-      document.title = "Sign in · ClearLED Product Intelligence";
-      window.setTimeout(() => authEmail.focus(), 0);
-    }
-
     function hasAuthSession() {
       return sessionStorage.getItem(AUTH_KEY) === "true" || localStorage.getItem(AUTH_KEY) === "true";
     }
-
-    if (hasAuthSession()) showWorkspace();
-    else showAuthentication();
-
-    passwordToggle.addEventListener("click", () => {
-      const reveal = authPassword.type === "password";
-      authPassword.type = reveal ? "text" : "password";
-      passwordToggle.textContent = reveal ? "Hide" : "Show";
-      passwordToggle.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
-    });
-
-    authForm.addEventListener("submit", event => {
-      event.preventDefault();
-      authError.textContent = "";
-      if (!authEmail.validity.valid) {
-        authError.textContent = "Enter a valid work email address.";
-        authEmail.focus();
-        return;
-      }
-      if (authPassword.value.length < 6) {
-        authError.textContent = "Password must be at least six characters.";
-        authPassword.focus();
-        return;
-      }
-      const storage = authRemember.checked ? localStorage : sessionStorage;
-      storage.setItem(AUTH_KEY, "true");
-      showWorkspace();
-    });
+    if (!hasAuthSession()) window.location.replace("../index.html");
 
     document.getElementById("signout-button").addEventListener("click", () => {
       sessionStorage.removeItem(AUTH_KEY);
       localStorage.removeItem(AUTH_KEY);
-      authForm.reset();
-      authPassword.type = "password";
-      passwordToggle.textContent = "Show";
-      showAuthentication();
+      window.location.replace("../index.html");
     });
 
     const products = [
